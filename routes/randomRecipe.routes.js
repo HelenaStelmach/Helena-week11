@@ -4,26 +4,23 @@ const db = require('../db');
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-
     try {
-
         const recipeQuery = `
-        SELECT id, recipeName, instructions
-        FROM recipe
-        ORDER BY RANDOM()
-        LIMIT 1;
+            SELECT id, recipeName, instructions
+            FROM recipe
+            ORDER BY RANDOM()
+            LIMIT 1;
         `;
 
         const recipeResult = await db.query(recipeQuery);
-
         const selectedRecipe = recipeResult.rows[0];
 
         const ingredientsQuery = `
-        SELECT b.ingredientName
-        FROM ingredient b
-        INNER JOIN ingredientInRecipe c
-        ON b.id = c.ingredientId
-        WHERE c.recipeId = $1;
+            SELECT b.ingredientName
+            FROM ingredient b
+            INNER JOIN ingredientinrecipe c
+            ON b.id = c.ingredientId
+            WHERE c.recipeId = $1;
         `;
 
         const ingredientsResult = await db.query(
@@ -35,23 +32,18 @@ router.get('/', async (req, res) => {
             element => element.ingredientname
         );
 
-        const randomRecipe = {
+        res.json({
             recipe: selectedRecipe,
             ingredients: ingredients
-        };
+        });
 
-        res.json(randomRecipe);
-
-    } catch(error) {
-
+    } catch (error) {
         console.log(error);
 
         res.status(500).json({
             errorMessage: 'Internal Server error.'
         });
-
     }
-
 });
 
 module.exports = router;
