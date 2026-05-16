@@ -11,6 +11,8 @@ app.use('/recipes', recipeRouter);
 app.use('/fullRecipes', fullRecipesRouter);
 app.use('/random', randomRouter);
 
-app.listen(3000, () => {
-    console.log('Server is running on Port 3000.');
-}
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+    console.log(`Server is running on Port ${PORT}.`);
+});
